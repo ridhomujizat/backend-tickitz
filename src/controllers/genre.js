@@ -1,4 +1,4 @@
-const modulGenre = require('../models/genre')
+const genreModel = require('../models/genre')
 const { validationResult } = require('express-validator')
 const status = require('../helpers/errorRespon')
 
@@ -16,12 +16,12 @@ module.exports = {
         name: req.body.name.toLowerCase()
       }
 
-      const checkGenre = await modulGenre.checkGenre(data.name)
+      const checkGenre = await genreModel.checkGenre(data.name)
       if (checkGenre.length === 0) {
-        const creatGenre = await modulGenre.createGenre(data)
+        const creatGenre = await genreModel.createGenre(data)
         console.log(creatGenre)
         if (creatGenre.affectedRows > 0) {
-          const result = await modulGenre.genreByid(creatGenre.insertId)
+          const result = await genreModel.genreByid(creatGenre.insertId)
           if (result.length > 0) {
             return res.json({
               success: true,
@@ -41,7 +41,7 @@ module.exports = {
     try {
       const id = req.params.id || null
 
-      const results = await modulGenre.genreByid(id)
+      const results = await genreModel.genreByid(id)
       if (results.length > 0) {
         return res.json({
           success: true,
@@ -65,9 +65,9 @@ module.exports = {
       const data = req.body
       const { id } = req.params
 
-      const checkGenre = await modulGenre.genreByid(id)
+      const checkGenre = await genreModel.genreByid(id)
       if (checkGenre.length > 0) {
-        modulGenre.updateGenre(id, data)
+        genreModel.updateGenre(id, data)
         return res.json({
           success: true,
           message: 'Updata genre successfuly',
@@ -86,9 +86,9 @@ module.exports = {
     try {
       const { id } = req.params
 
-      const checkGenre = await modulGenre.genreByid(id)
+      const checkGenre = await genreModel.genreByid(id)
       if (checkGenre.length > 0) {
-        modulGenre.deleteGenre(id)
+        genreModel.deleteGenre(id)
         return res.json({
           success: true,
           message: `${checkGenre[0].name} deleted successfully.`,

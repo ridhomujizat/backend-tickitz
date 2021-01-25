@@ -17,9 +17,10 @@ module.exports = {
   checkGenre: async (name) => {
     return new Promise((resolve, reject) => {
       db.query(`
-        SELECT name FROM genre where name LIKE "%${name}%"
+        SELECT id, name FROM genre WHERE name = "${name}"
       `, (err, res, field) => {
         if (err) reject(err)
+        console.log(err)
         resolve(res)
       })
     })
@@ -28,6 +29,32 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.query(`
         SELECT * FROM genre ${id ? `WHERE id=${id}` : ''}
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
+  getMovieGenre: async (id, cond) => {
+    return new Promise((resolve, reject) => {
+      db.query(`SELECT m.*, GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', ') AS genre  
+      FROM movies m
+      INNER JOIN movie_genres mg ON m.id = mg.idMovie
+      INNER JOIN genre g ON mg.idGenre = ${id}
+      WHERE m.title LIKE "%${cond.search}%"
+      GROUP BY m.id, m.image, m.releaseDate, m.directed, m.hour, m.minute, m.casts, m.description, m.status, m.slug, m.createdAt, m.updatedAt
+      ORDER BY ${cond.sort} ${cond.order}
+      LIMIT ${cond.dataLimit} OFFSET ${cond.offset}
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
+  countMovieGenre: async (id) => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      SELECT count(*) as totalData FROM movie_genres WHERE idGenre = ${id}
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

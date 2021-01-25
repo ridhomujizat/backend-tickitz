@@ -69,7 +69,6 @@ module.exports = {
         sort: cond.sort,
         order: cond.order
       })
-      console.log(query)
 
       cond.search = cond.search || ''
       cond.page = Number(cond.page) || 1
@@ -219,6 +218,58 @@ module.exports = {
     } catch (err) {
       console.log(err)
       return status.serverError(res)
+    }
+  },
+  movieByGenre: async (req, res) => {
+    try {
+      const { name } = req.params
+      const cond = req.query
+      console.log(cond)
+      const query = qs.stringify({
+        limit: cond.limit,
+        offset: cond.offset,
+        sort: cond.sort,
+        order: cond.order
+      })
+
+      cond.search = cond.search || ''
+      cond.page = Number(cond.page) || 1
+      cond.limit = Number(cond.limit) || 5
+      cond.dataLimit = cond.limit * cond.page
+      cond.offset = (cond.page - 1) * cond.limit
+      cond.sort = cond.sort || 'id'
+      cond.order = cond.order || 'ASC'
+
+      // Check genre availble or not
+      const checkGenre = await genreModel.checkGenre(name)
+      console.log(checkGenre)
+      if (checkGenre[0].id) {
+        const totalDataCheck = await genreModel.countMovieGenre(checkGenre[0].id)
+        const totalPage = Math.ceil(Number(totalDataCheck[0].totalData) / cond.limit)
+
+        const results = await genreModel.getMovieGenre(checkGenre[0].id, cond)
+
+        return res.json({
+          success: true,
+          message: 'List all movies',
+          pageInfo: {
+            totalData: totalDataCheck[0].totalData,
+            currentPage: cond.page,
+            totalPage: totalPage,
+            results,
+            nextLink: (cond.search.length > 0
+              ? (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}?search=${cond.search}${query}` : null)
+              : (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}${query}` : null)),
+            prevLink: (cond.search.length > 0
+              ? (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}?search=${cond.search}${query}` : null)
+              : (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}${query}` : null))
+          }
+        })
+      }
+
+      return status.notFound(res, 'Genre Not Found')
+    } catch (err) {
+      console.log(err)
     }
   }
 }
