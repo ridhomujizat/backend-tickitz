@@ -13,13 +13,13 @@ module.exports = {
     try {
       const data = {
         ...req.body,
-        name: req.body.name.toLowerCase()
+        name: req.body.name.toLowerCase(),
+        createdBy: req.userData.id
       }
 
       const checkGenre = await genreModel.checkGenre(data.name)
       if (checkGenre.length === 0) {
         const creatGenre = await genreModel.createGenre(data)
-        console.log(creatGenre)
         if (creatGenre.affectedRows > 0) {
           const result = await genreModel.genreByid(creatGenre.insertId)
           if (result.length > 0) {

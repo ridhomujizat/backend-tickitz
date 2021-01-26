@@ -17,6 +17,12 @@ module.exports = {
       message: message
     })
   },
+  unauthorized: (res, message) => {
+    return res.status(401).json({
+      success: false,
+      message: message
+    })
+  },
   testApp: (res, item) => {
     return res.json({
       success: true,

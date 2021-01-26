@@ -3,10 +3,10 @@ const path = require('path')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/movies')
+    cb(null, 'uploads/cinemas')
   },
   filename: (req, file, cb) => {
-    cb(null, `movie-${file.fieldname}-${new Date().getTime()}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`)
+    cb(null, `cinema-${file.fieldname}-${new Date().getTime()}.${file.originalname.split('.')[file.originalname.split('.').length - 1]}`)
   }
 })
 
@@ -23,14 +23,14 @@ const limits = {
   fileSize: 1 * 1024 * 1024
 }
 
-const uploadMovies = multer({
+const uploadcinemas = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: limits
 }).single('image')
 
 const upload = (req, res, next) => {
-  uploadMovies(req, res, (err) => {
+  uploadcinemas(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       console.log(multer.MulterError)
       return res.json({

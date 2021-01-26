@@ -17,6 +17,8 @@ app.use(cors('*'))
 // Routers
 app.use('/genre', require('./src/routers/genre'))
 app.use('/movies', require('./src/routers/movie'))
+app.use('/cinema', require('./src/routers/cinema'))
+app.use('', require('./src/routers/auth'))
 
 // Test App
 app.get('/', (req, res) => {

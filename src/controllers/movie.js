@@ -11,6 +11,9 @@ module.exports = {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path)
+      }
       return status.badRequest(res, errors.array()[0].msg)
     }
 
@@ -18,6 +21,7 @@ module.exports = {
       const { title } = req.body
       const body = {
         ...req.body,
+        createdBy: req.userData.id,
         image: (req.file && req.file.path) || null,
         slug: title.replace(/([^\s\w])/g, '').replace(/ /g, '-').toLowerCase()
       }
@@ -28,6 +32,9 @@ module.exports = {
       const genreCheckId = typeof idGenre === 'object' ? idGenre : [idGenre]
       const resultsCheckGenre = await genreModel.checkAllGenres(genreCheckId)
       if (resultsCheckGenre.length !== genreCheckId.length) {
+        if (req.file) {
+          fs.unlinkSync(req.file.path)
+        }
         return status.notFound(res, 'Some genre are unavailable')
       } else {
         resultsCheckGenre.forEach(genre => {
@@ -46,7 +53,6 @@ module.exports = {
         // get a movie that has just been made
         const movie = await movieModel.readMovieDetail(initialResult.insertId)
         if (movie.length > 0) {
-          console.log(movie)
           return res.json({
             success: true,
             message: 'Movie successfull created',
@@ -109,6 +115,9 @@ module.exports = {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path)
+      }
       return status.badRequest(res, errors.array()[0].msg)
     }
 
@@ -120,7 +129,9 @@ module.exports = {
       // get previous movie
       const initialResult = await movieModel.readMovieDetail(id)
       if (initialResult.length === 0) {
-        fs.unlinkSync(req.file.path)
+        if (req.file) {
+          fs.unlinkSync(req.file.path)
+        }
         return status.notFound(res, 'Movie selected Not Found')
       }
 
@@ -129,11 +140,6 @@ module.exports = {
         data = {
           ...data,
           image: req.file.path
-        }
-
-        // delete previous image
-        if (initialResult[0].image) {
-          fs.unlinkSync(initialResult[0].image)
         }
       }
 
@@ -165,19 +171,35 @@ module.exports = {
         await movieModel.createMovieGenre(id, selectedGenre)
 
         // update data movie if data found
-        if (Object.keys(data).length > 0) {
-          const updateDataMovie = await movieModel.updateMovie(id, data)
-          if (updateDataMovie.affectedRows > 0) {
-            const finalResult = await movieModel.readMovieDetail(id)
-            return res.json({
-              success: true,
-              message: 'Movie has been updated',
-              results: finalResult[0]
-            })
-          }
+        console.log(Object.keys(data).length)
+        if (Object.keys(data).length === 0) {
+          const finalResult = await movieModel.readMovieDetail(id)
+          return res.json({
+            success: true,
+            message: 'Movie has been updated',
+            results: finalResult[0]
+          })
+        }
+
+        // delete previous image
+        if (initialResult[0].image !== 'null') {
+          fs.unlinkSync(initialResult[0].image)
+        }
+        const updateDataMovie = await movieModel.updateMovie(id, data)
+        if (updateDataMovie.affectedRows > 0) {
+          const finalResult = await movieModel.readMovieDetail(id)
+          return res.json({
+            success: true,
+            message: 'Movie has been updated',
+            results: finalResult[0]
+          })
         }
       }
 
+      // delete previous image
+      if (initialResult[0].image !== 'null') {
+        fs.unlinkSync(initialResult[0].image)
+      }
       // Update data without genre
       const updateDataMovie = await movieModel.updateMovie(id, data)
       if (updateDataMovie.affectedRows > 0) {
@@ -204,17 +226,18 @@ module.exports = {
       }
 
       // delete previous image
-      if (initialResult[0].image) {
+      if (initialResult[0].image !== 'null') {
         fs.unlinkSync(initialResult[0].image)
       }
 
       const results = await movieModel.deleteMovie(id)
-      console.log(results)
-      return res.json({
-        success: true,
-        message: 'Movie has been deleted',
-        results: initialResult[0]
-      })
+      if (results) {
+        return res.json({
+          success: true,
+          message: 'Movie has been deleted',
+          results: initialResult[0]
+        })
+      }
     } catch (err) {
       console.log(err)
       return status.serverError(res)
@@ -224,7 +247,6 @@ module.exports = {
     try {
       const { name } = req.params
       const cond = req.query
-      console.log(cond)
       const query = qs.stringify({
         limit: cond.limit,
         offset: cond.offset,
@@ -242,7 +264,6 @@ module.exports = {
 
       // Check genre availble or not
       const checkGenre = await genreModel.checkGenre(name)
-      console.log(checkGenre)
       if (checkGenre[0].id) {
         const totalDataCheck = await genreModel.countMovieGenre(checkGenre[0].id)
         const totalPage = Math.ceil(Number(totalDataCheck[0].totalData) / cond.limit)
@@ -270,6 +291,7 @@ module.exports = {
       return status.notFound(res, 'Genre Not Found')
     } catch (err) {
       console.log(err)
+      return status.serverError(res)
     }
   }
 }

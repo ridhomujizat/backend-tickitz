@@ -8,7 +8,7 @@ module.exports = {
   ],
   validationCreatMovie: [
     check('title')
-      .notEmpty().withMessage('name is required!')
+      .notEmpty().withMessage('title is required!')
       .isLength({ min: 3, max: 100 }).withMessage('title length must min 3 & max 100!'),
     check('releaseDate')
       .notEmpty().withMessage('date is required!'),
@@ -24,14 +24,14 @@ module.exports = {
       .isLength({ min: 3, max: 1000 }).withMessage('casts length must min 3 & max 1000!'),
     check('description')
       .notEmpty().withMessage('description is required!')
-      .isLength({ min: 10, max: 1000 }).withMessage('descriptio length must min 10 & max 1000!'),
+      .isLength({ min: 10, max: 1000 }).withMessage('description length must min 10 & max 1000!'),
     check('status')
       .notEmpty().withMessage('status is required!')
       .isIn(['upcoming', 'released']).withMessage('velue status just upcoming & released')
   ],
   validationUpdateMovie: [
     check('title').optional()
-      .isLength({ min: 3, max: 100 }).withMessage('name length must min 3 & max 100!'),
+      .isLength({ min: 3, max: 100 }).withMessage('title length must min 3 & max 100!'),
     check('directed').optional()
       .isLength({ min: 3, max: 100 }).withMessage('directed length must min 3 & max 100!'),
     check('hour').optional()
@@ -41,8 +41,32 @@ module.exports = {
     check('casts').optional()
       .isLength({ min: 3, max: 1000 }).withMessage('casts length must min 3 & max 1000!'),
     check('description').optional()
-      .isLength({ min: 10, max: 1000 }).withMessage('descriptio length must min 10 & max 1000!'),
+      .isLength({ min: 10, max: 1000 }).withMessage('description length must min 10 & max 1000!'),
     check('status').optional()
       .isIn(['upcoming', 'released']).withMessage('velue status just upcoming & released')
+  ],
+  validationCreateCinema: [
+    check('name')
+      .notEmpty().withMessage('name is required!')
+      .isLength({ min: 3, max: 100 }).withMessage('name length must min 2 & max 100!'),
+    check('address')
+      .notEmpty().withMessage('address is required!')
+      .isLength({ min: 5, max: 10000 }).withMessage('address length must min 10 & max 1000!'),
+    check('price')
+      .notEmpty().withMessage('price is required!')
+      .isLength({ min: 2, max: 1000 }).withMessage('address length must min 10 & max 1000!')
+
+  ],
+  validationUpdateCinema: [
+    check('name')
+      .optional()
+      .isLength({ min: 3, max: 100 }).withMessage('name length must min 2 & max 100!'),
+    check('address')
+      .optional()
+      .isLength({ min: 5, max: 10000 }).withMessage('address length must min 10 & max 1000!'),
+    check('price')
+      .optional()
+      .isLength({ min: 2, max: 1000 }).withMessage('address length must min 10 & max 1000!')
+
   ]
 }
