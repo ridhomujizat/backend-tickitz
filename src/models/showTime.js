@@ -14,6 +14,16 @@ module.exports = {
       })
     })
   },
+  getTime: async () => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      SELECT * FROM show_time
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
   getShowTimeById: async (id) => {
     return new Promise((resolve, reject) => {
       db.query(`

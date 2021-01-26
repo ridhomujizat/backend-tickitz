@@ -67,6 +67,9 @@ module.exports = {
     check('price')
       .optional()
       .isLength({ min: 2, max: 1000 }).withMessage('address length must min 10 & max 1000!')
-
+  ],
+  validateShowTime: [
+    check('time')
+      .notEmpty().withMessage('time is required!')
   ]
 }
