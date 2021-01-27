@@ -1,4 +1,8 @@
 node_modules
 .env
-upload/movies/*
-!upload/movies/.gitkeep
+*.jpg
+*.png
+*.jpeg
+uploads/**/*.jpg
+uploads/**/*.png
+uploads/**/*.jpeg
