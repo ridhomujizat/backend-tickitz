@@ -35,7 +35,7 @@ module.exports = {
       })
     })
   },
-  updateCinema: async (id, data) => {
+  updateShowTime: async (id, data) => {
     return new Promise((resolve, reject) => {
       const key = Object.keys(data)
       const value = Object.values(data)
@@ -49,7 +49,7 @@ module.exports = {
       })
     })
   },
-  deleteCinema: async (id) => {
+  deleteShowTime: async (id) => {
     return new Promise((resolve, reject) => {
       db.query(`
         DELETE FROM show_time  WHERE id=${id}
@@ -58,5 +58,14 @@ module.exports = {
         resolve(res)
       })
     })
+  },
+  checkAllShowTime: (data = []) => {
+    return new Promise((resolve, reject) => {
+      db.query(`SELECT COUNT(*) as totalData FROM show_time WHERE id IN (${data.map(item => item).join()})`, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
   }
+
 }

@@ -71,5 +71,17 @@ module.exports = {
   validateShowTime: [
     check('time')
       .notEmpty().withMessage('time is required!')
+  ],
+  validationCreateSchedule: [
+    check('idMovie')
+      .notEmpty().withMessage('Movie is required'),
+    check('idCinema')
+      .notEmpty().withMessage('Cinema is required'),
+    check('idTime')
+      .notEmpty().withMessage('Movie is required'),
+    check('seatType')
+      .notEmpty().withMessage('Movie is required'),
+    check('date')
+      .notEmpty().withMessage('Movie is required')
   ]
 }

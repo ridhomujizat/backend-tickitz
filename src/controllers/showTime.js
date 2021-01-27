@@ -68,7 +68,7 @@ module.exports = {
         return status.badRequest(res, 'Time selected Not Found')
       }
 
-      const result = await showTimeModel.updateCinema(id, { time })
+      const result = await showTimeModel.updateShowTime(id, { time })
       if (result.affectedRows > 0) {
         return res.json({
           success: true,
