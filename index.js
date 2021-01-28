@@ -20,6 +20,7 @@ app.use('/movies', require('./src/routers/movie'))
 app.use('/cinema', require('./src/routers/cinema'))
 app.use('/showtime', require('./src/routers/showTIme'))
 app.use('/schedule', require('./src/routers/schedule'))
+app.use('/transaction', require('./src/routers/transaction'))
 app.use('', require('./src/routers/auth'))
 
 // Test App

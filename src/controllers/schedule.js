@@ -82,7 +82,7 @@ module.exports = {
             price: item.price,
             location: item.location,
             date: item.date,
-            showTime: results.filter((item) => item.idCinema === item.idCinema)
+            showTime: results.filter(studio => studio.idCinema === item.idCinema)
               .map(({ id, time, seat }) => ({ id, time, seat }))
           })
         }
@@ -100,7 +100,7 @@ module.exports = {
           }
         })
       }
-      return status.testApp(res)
+      return status.badRequest(res, 'Failed to load data schdule')
     } catch (err) {
       console.log(err)
       return status.serverError(res)
