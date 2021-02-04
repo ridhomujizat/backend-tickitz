@@ -62,15 +62,14 @@ module.exports = {
   read: async (req, res) => {
     try {
       console.log(req.query)
-      const { idMovie, ...cond } = req.query
+      const { slug, ...cond } = req.query
 
       // cond.page = Number(cond.page) || 1
       // cond.limit = Number(cond.limit) || 5
       // cond.dataLimit = cond.limit * cond.page
       // cond.offset = (cond.page - 1) * cond.limit
 
-      const results = await scheduleModel.getScheduleByMovie(idMovie, cond)
-      console.log(results)
+      const results = await scheduleModel.getScheduleByMovie(slug, cond)
       // Get Cinema uniq
       const filterCinema = Object.values(results.reduce((unique, item) => {
         if (!unique[item.idCinema]) {
@@ -100,7 +99,7 @@ module.exports = {
           }
         })
       }
-      return status.badRequest(res, 'Failed to load data schdule')
+      return status.notFound(res, 'no schedule yet')
     } catch (err) {
       console.log(err)
       return status.serverError(res)

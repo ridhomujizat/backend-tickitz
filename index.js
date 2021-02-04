@@ -14,13 +14,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 app.use(cors('*'))
 
+app.use('/uploads', express.static('uploads'))
+
 // Routers
 app.use('/genre', require('./src/routers/genre'))
+app.use('/profile', require('./src/routers/profile'))
 app.use('/movies', require('./src/routers/movie'))
 app.use('/cinema', require('./src/routers/cinema'))
 app.use('/showtime', require('./src/routers/showTIme'))
 app.use('/schedule', require('./src/routers/schedule'))
 app.use('/transaction', require('./src/routers/transaction'))
+app.use('/location', require('./src/routers/location'))
 app.use('', require('./src/routers/auth'))
 
 // Test App

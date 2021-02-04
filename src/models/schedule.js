@@ -16,7 +16,7 @@ module.exports = {
       })
     })
   },
-  getScheduleByMovie: async (idMovie, cond) => {
+  getScheduleByMovie: async (slug, cond) => {
     return new Promise((resolve, reject) => {
       db.query(`
       SELECT idMovie, m.title, idCinema, c.name, c.image, c.address, c.price, c.location, l.name as location, date, 
@@ -27,7 +27,7 @@ module.exports = {
       INNER JOIN show_time t ON t.id = d.idTime
       INNER JOIN location l ON l.id = c.location
       INNER JOIN seat_type s ON s.id = d.seatType
-      WHERE idMovie =${idMovie}
+      WHERE slug ='${slug}'
       ${cond.idLocation ? `AND c.location = ${cond.idLocation}` : ''}
       ${cond.date ? `AND d.date = '${cond.date}'` : ''}
       `, (err, res, field) => {

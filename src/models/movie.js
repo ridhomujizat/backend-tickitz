@@ -42,6 +42,21 @@ module.exports = {
       })
     })
   },
+  readMovieDetailSlug: async (slug) => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      SELECT m.*, GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', ') AS genre  
+      FROM movies m
+      LEFT JOIN movie_genres mg ON m.id = mg.idMovie
+      LEFT JOIN genre g ON mg.idGenre = g.id
+      WHERE m.slug='${slug}' 
+      GROUP BY m.id, m.image, m.releaseDate, m.directed, m.hour, m.minute, m.casts, m.description, m.status, m.slug, m.createdAt, m.updatedAt
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
   readMoviebyCond: async (cond) => {
     return new Promise((resolve, reject) => {
       db.query(`

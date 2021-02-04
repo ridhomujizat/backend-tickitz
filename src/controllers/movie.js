@@ -63,6 +63,7 @@ module.exports = {
         }
       }
     } catch (err) {
+      console.log(err)
       return status.serverError(res)
     }
   },
@@ -100,11 +101,11 @@ module.exports = {
           totalPage: totalPage,
           results,
           nextLink: (cond.search.length > 0
-            ? (cond.page < totalPage ? `${APP_URL}/movies?page=${cond.page + 1}?search=${cond.search}${query}` : null)
-            : (cond.page < totalPage ? `${APP_URL}/movies?page=${cond.page + 1}${query}` : null)),
+            ? (cond.page < totalPage ? `${APP_URL}/movies?page=${cond.page + 1}&search=${cond.search}&${query}` : null)
+            : (cond.page < totalPage ? `${APP_URL}/movies?page=${cond.page + 1}&${query}` : null)),
           prevLink: (cond.search.length > 0
-            ? (cond.page > 1 ? `${APP_URL}/movies?page=${cond.page - 1}?search=${cond.search}${query}` : null)
-            : (cond.page > 1 ? `${APP_URL}/movies?page=${cond.page - 1}${query}` : null))
+            ? (cond.page > 1 ? `${APP_URL}/movies?page=${cond.page - 1}&search=${cond.search}&${query}` : null)
+            : (cond.page > 1 ? `${APP_URL}/movies?page=${cond.page - 1}&${query}` : null))
         }
       })
     } catch (err) {
@@ -280,11 +281,11 @@ module.exports = {
             totalPage: totalPage,
             results,
             nextLink: (cond.search.length > 0
-              ? (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}?search=${cond.search}${query}` : null)
-              : (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}${query}` : null)),
+              ? (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}&search=${cond.search}&${query}` : null)
+              : (cond.page < totalPage ? `${APP_URL}/movies/genre/${name}?page=${cond.page + 1}&${query}` : null)),
             prevLink: (cond.search.length > 0
-              ? (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}?search=${cond.search}${query}` : null)
-              : (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}${query}` : null))
+              ? (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}&search=${cond.search}&${query}` : null)
+              : (cond.page > 1 ? `${APP_URL}/movies/genre/${name}?page=${cond.page - 1}&${query}` : null))
           }
         })
       }
@@ -292,6 +293,23 @@ module.exports = {
       return status.notFound(res, 'Genre Not Found')
     } catch (err) {
       console.log(err)
+      return status.serverError(res)
+    }
+  },
+  movieDetail: async (req, res) => {
+    try {
+      const { slug } = req.params
+
+      const results = await movieModel.readMovieDetailSlug(slug)
+      if (results) {
+        return res.json({
+          success: true,
+          message: 'Movie detail',
+          results: results[0]
+        })
+      }
+      return status.notFound(res, 'Movie Not Found!')
+    } catch (err) {
       return status.serverError(res)
     }
   }

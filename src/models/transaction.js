@@ -36,5 +36,19 @@ module.exports = {
         resolve(res)
       })
     })
+  },
+  readsSeatSold: async (idSchedule) => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      SELECT seatSelected
+      FROM cart
+      INNER JOIN transaction t ON idTransaction = t.id 
+      AND t.status ='success'
+      WHERE idSchedule=${idSchedule}
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
   }
 }

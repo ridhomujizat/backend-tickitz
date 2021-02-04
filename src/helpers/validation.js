@@ -83,5 +83,27 @@ module.exports = {
       .notEmpty().withMessage('Movie is required'),
     check('date')
       .notEmpty().withMessage('Movie is required')
+  ],
+  validateProfile: [
+    check('firstName')
+      .notEmpty().withMessage('Frist Name is required')
+      .isLength({ min: 1, max: 100 }).withMessage('Frist Name length must min 2 & max 100!'),
+    check('lastName')
+      .optional()
+      .isLength({ min: 1, max: 100 }).withMessage('Last Name length must min 2 & max 100!'),
+    check('phone')
+      .optional()
+      .isLength({ min: 10, max: 100 }).withMessage('Phone length must min 2 & max 100!')
+  ],
+  validateupdateProfile: [
+    check('firstName')
+      .optional()
+      .isLength({ min: 1, max: 100 }).withMessage('Frist Name length must min 2 & max 100!'),
+    check('lastName')
+      .optional()
+      .isLength({ min: 1, max: 100 }).withMessage('Last Name length must min 2 & max 100!'),
+    check('phone')
+      .optional()
+      .isLength({ min: 10, max: 100 }).withMessage('Phone length must min 2 & max 100!')
   ]
 }

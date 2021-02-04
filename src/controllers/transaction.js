@@ -35,5 +35,23 @@ module.exports = {
       console.log(err)
       return status.serverError(res)
     }
+  },
+  readSeatSold: async (req, res) => {
+    try {
+      const { id } = req.params
+      console.log(id)
+      const result = await transactionModel.readsSeatSold(id)
+      if (result.length > 0) {
+        return res.json({
+          success: true,
+          message: 'List seat sold',
+          result
+        })
+      }
+      return status.notFound(res, 'Not seat selectred')
+    } catch (err) {
+      console.log(err)
+      return status.serverError(res)
+    }
   }
 }

@@ -8,6 +8,7 @@ routes.post('', authAdmin, uploadImage, validationCreatMovie, movieController.cr
 routes.get('', movieController.read)
 routes.patch('/:id', authAdmin, uploadImage, validationUpdateMovie, movieController.update)
 routes.delete('/:id', authAdmin, movieController.delete)
+routes.get('/:slug', movieController.movieDetail)
 routes.get('/genre/:name', movieController.movieByGenre)
 
 module.exports = routes

@@ -116,7 +116,7 @@ module.exports = {
           }
         })
       }
-      return status.testApp(res)
+      return status.badRequest(res, 'Cannot Update Cinema')
     } catch (err) {
       console.log(err)
       return status.serverError(res)
