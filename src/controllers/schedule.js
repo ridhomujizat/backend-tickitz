@@ -71,23 +71,41 @@ module.exports = {
 
       const results = await scheduleModel.getScheduleByMovie(slug, cond)
       // Get Cinema uniq
-      const filterCinema = Object.values(results.reduce((unique, item) => {
-        if (!unique[item.idCinema]) {
-          unique[item.idCinema] = ({
-            idCinema: item.idCinema,
-            name: item.name,
-            image: item.image,
-            address: item.address,
-            price: item.price,
-            location: item.location,
-            date: item.date,
-            showTime: results.filter(studio => studio.idCinema === item.idCinema)
-              .map(({ id, time, seat }) => ({ id, time, seat }))
-          })
-        }
+      // const filterCinema = Object.values(results.reduce((unique, item) => {
+      //   console.log(unique[item.idCinema].idCinema)
+      //   if (!unique[item.date]) {
+      //     if (!unique[item.idCinema]) {
+      //       unique[item.idCinema] = ({
+      //         idCinema: item.idCinema,
+      //         name: item.name,
+      //         image: item.image,
+      //         address: item.address,
+      //         price: item.price,
+      //         location: item.location,
+      //         date: item.date,
+      //         showTime: results.filter(studio => studio.idCinema === item.idCinema)
+      //           .map(({ id, time, seat }) => ({ id, time, seat }))
+      //       })
+      //     }
+      //   }
 
-        return unique
-      }, {}))
+      //   return unique
+      // }, {}))
+      const initialFilter = results.filter((item, index, self) => self.findIndex(t => t.idCinema === item.idCinema && String(t.date) === String(item.date)) === index)
+      console.log(initialFilter)
+
+      const finalFilter = initialFilter.map(item => ({
+        idCinema: item.idCinema,
+        name: item.name,
+        image: item.image,
+        address: item.address,
+        price: item.price,
+        location: item.location,
+        date: item.date,
+        showTime: results.filter(studio => studio.idCinema === item.idCinema && String(studio.date) === String(item.date))
+          .map(({ id, time, seat }) => ({ id, time, seat }))
+      }))
+
       if (results.length > 1) {
         return res.json({
           success: true,
@@ -95,11 +113,11 @@ module.exports = {
           results: {
             idMovie: results[0].idMovie,
             title: results[0].title,
-            cinema: filterCinema
+            cinema: finalFilter
           }
         })
       }
-      return status.notFound(res, 'no schedule yet')
+      return status.notFound(res, 'Schedule does not exist')
     } catch (err) {
       console.log(err)
       return status.serverError(res)

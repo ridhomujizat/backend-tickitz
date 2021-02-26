@@ -63,7 +63,23 @@ module.exports = {
       INNER JOIN schedule s ON s.id = c.idSchedule
       INNER JOIN show_time st ON st.id = s.idTime
       INNER JOIN cinemas ci ON ci.id = s.idCinema
-      WHERE t.id=${idTransaction} AND t.status =${status ? `'${status}'` : 1}
+      WHERE t.id=${idTransaction}
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
+  getHistoryTransaction: async (id) => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      SELECT t.*,s.date,st.time,ci.price, c.seatSelected
+      FROM transaction t
+      INNER JOIN cart c ON c.idTransaction = t.id
+      INNER JOIN schedule s ON s.id = c.idSchedule
+      INNER JOIN show_time st ON st.id = s.idTime
+      INNER JOIN cinemas ci ON ci.id = s.idCinema
+      WHERE t.createdBy=${id}
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

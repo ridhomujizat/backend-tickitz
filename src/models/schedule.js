@@ -28,8 +28,8 @@ module.exports = {
       INNER JOIN location l ON l.id = c.location
       INNER JOIN seat_type s ON s.id = d.seatType
       WHERE slug ='${slug}'
-      ${cond.idLocation ? `AND c.location = ${cond.idLocation}` : ''}
-      ${cond.date ? `AND d.date = '${cond.date}'` : ''}
+      AND c.location = '${cond.idLocation}'
+      AND d.date = '${cond.date}'
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

@@ -41,6 +41,7 @@ app.get('*', (req, res) => {
   status.notFound(res, 'API Not Found!')
 })
 
+const hostname = '192.168.100.1'
 app.listen(APP_PORT, () => {
   console.log(`App is running on port ${APP_PORT}`)
 })

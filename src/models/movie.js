@@ -64,7 +64,7 @@ module.exports = {
       FROM movies m
       LEFT JOIN movie_genres mg ON m.id = mg.idMovie
       LEFT JOIN genre g ON mg.idGenre = g.id
-      WHERE m.title LIKE "%${cond.search}%"
+      WHERE m.title LIKE "%${cond.search}%" AND m.status LIKE "%${cond.status}%"
       GROUP BY m.id, m.image, m.releaseDate, m.directed, m.hour, m.minute, m.casts, m.description, m.status, m.slug, m.createdAt, m.updatedAt
       ORDER BY ${cond.sort} ${cond.order}
       LIMIT ${cond.dataLimit} OFFSET ${cond.offset}
@@ -77,7 +77,7 @@ module.exports = {
   checkTotalMovieCond: async (cond) => {
     return new Promise((resolve, reject) => {
       db.query(`
-        SELECT COUNT(*) as totalData FROM movies WHERE title LIKE "%${cond.search}%"
+        SELECT COUNT(*) as totalData FROM movies WHERE title LIKE "%${cond.search}%" AND status LIKE "%${cond.status}%"
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

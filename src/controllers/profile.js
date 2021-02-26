@@ -44,11 +44,11 @@ module.exports = {
       if (results.length > 0) {
         return res.json({
           success: true,
-          message: 'Profile Created',
-          results
+          message: 'Profile Detail',
+          results: results[0]
         })
       }
-      return status.notFound(res, 'Profile has not been created')
+      return status.notFound(res, 'Complate your Profile')
     } catch (err) {
       console.log(err)
       return status.serverError(res)
@@ -73,7 +73,7 @@ module.exports = {
           if (req.file) {
             fs.unlinkSync(req.file.path)
           }
-          return status.notFound(res, 'Cinema selected not found')
+          return status.notFound(res, 'Complate your Profile')
         }
       }
 

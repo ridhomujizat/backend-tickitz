@@ -84,6 +84,7 @@ module.exports = {
       cond.offset = (cond.page - 1) * cond.limit
       cond.sort = cond.sort || 'id'
       cond.order = cond.order || 'ASC'
+      cond.status = cond.status || ''
 
       // get page info
       const totalDataCheck = await movieModel.checkTotalMovieCond(cond)
@@ -301,7 +302,7 @@ module.exports = {
       const { slug } = req.params
 
       const results = await movieModel.readMovieDetailSlug(slug)
-      if (results) {
+      if (results.length > 0) {
         return res.json({
           success: true,
           message: 'Movie detail',

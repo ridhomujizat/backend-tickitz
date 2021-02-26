@@ -8,6 +8,7 @@ module.exports = {
         ...req.body,
         createdBy: req.userData.id
       }
+      console.log(body)
       // checkSchedule
       // code check schedule
       // checkseat
@@ -25,10 +26,11 @@ module.exports = {
         const results = await transactionModel.addItemCart(idSchedule, initialresults.insertId, body.seatSelected)
         if (results.affectedRows > 0) {
           const finalresults = await transactionModel.getdetailTransaction(initialresults.insertId)
+          console.log(finalresults)
           return res.json({
             success: true,
             message: 'Seat Added to cart',
-            results: finalresults[0]
+            results: finalresults
           })
         }
       }
@@ -45,13 +47,21 @@ module.exports = {
       console.log(id)
       const result = await transactionModel.readsSeatSold(id)
       if (result.length > 0) {
+        const splitter = result.reduce((value, item) => {
+          const split = item.seatSelected.split(',')
+          return [...value, ...split]
+        }, [])
         return res.json({
           success: true,
           message: 'List seat sold',
-          result
+          result: splitter
         })
       }
-      return status.notFound(res, 'Not seat selectred')
+      return res.json({
+        success: true,
+        message: 'List seat sold',
+        result: []
+      })
     } catch (err) {
       console.log(err)
       return status.serverError(res)
@@ -63,6 +73,7 @@ module.exports = {
       const { statusPayment } = req.query
 
       const results = await transactionModel.getdetailTransaction(id, statusPayment)
+      console.log(results)
       if (results.length > 0) {
         if (results[0].createdBy === req.userData.id) {
           return res.json({
@@ -73,10 +84,32 @@ module.exports = {
         }
         return res.status(401).json({
           success: false,
-          message: 'User s needed'
+          message: 'Flase Id Transaction'
         })
       }
       return status.notFound(res, 'Transaction Not Found')
+    } catch (err) {
+      console.log(err)
+      return status.serverError(res)
+    }
+  },
+  getOrderHistory: async (req, res) => {
+    try {
+      const { id } = req.userData
+      console.log(id)
+      const results = await transactionModel.getHistoryTransaction(id)
+      if (results.length > 0) {
+        return res.json({
+          status: true,
+          message: 'List Order History',
+          results: results
+        })
+      }
+      return res.json({
+        status: true,
+        message: 'List Order History',
+        results: []
+      })
     } catch (err) {
       console.log(err)
       return status.serverError(res)
