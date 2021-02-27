@@ -54,7 +54,7 @@ module.exports = {
       })
     })
   },
-  getdetailTransaction: async (idTransaction, status) => {
+  getdetailTransaction: async (idTransaction) => {
     return new Promise((resolve, reject) => {
       db.query(`
       SELECT t.*,s.date,st.time,ci.price, GROUP_CONCAT(DISTINCT c.seatSelected ORDER BY c.seatSelected DESC SEPARATOR ', ') AS seatSelected
@@ -80,6 +80,23 @@ module.exports = {
       INNER JOIN show_time st ON st.id = s.idTime
       INNER JOIN cinemas ci ON ci.id = s.idCinema
       WHERE t.createdBy=${id}
+      ORDER BY t.createdAt DESC
+      LIMIT 5
+
+      `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
+  updateTransaction: async (id, data) => {
+    return new Promise((resolve, reject) => {
+      const key = Object.keys(data)
+      const value = Object.values(data)
+      db.query(`
+        UPDATE transaction
+        SET ${key.map((item, index) => `${item}="${value[index]}"`)}
+        WHERE id=${id}
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

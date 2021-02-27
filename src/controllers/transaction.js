@@ -114,5 +114,34 @@ module.exports = {
       console.log(err)
       return status.serverError(res)
     }
+  },
+  updateComplatePayment: async (req, res) => {
+    try {
+      const { id } = req.params
+      const data = {
+        ...req.body,
+        status: 'success'
+      }
+      const initialResult = await transactionModel.getdetailTransaction(id)
+      console.log(initialResult.length)
+      if (initialResult.length > 0) {
+        const resultPayment = await transactionModel.updateTransaction(id, data)
+        if (resultPayment.affectedRows > 0) {
+          return res.json({
+            success: true,
+            message: 'Payment Success',
+            result: {
+              ...initialResult[0],
+              ...data
+            }
+          })
+        }
+        return status.badRequest(res, 'Payment Failed')
+      }
+      return status.notFound(res, 'Transaction Not Found')
+    } catch (err) {
+      console.log(err)
+      return status.serverError(res)
+    }
   }
 }
