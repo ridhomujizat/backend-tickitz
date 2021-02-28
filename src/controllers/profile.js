@@ -2,6 +2,7 @@ const status = require('../helpers/errorRespon')
 const { validationResult } = require('express-validator')
 const profileModel = require('../models/profile')
 const fs = require('fs')
+const bcrypt = require('bcrypt')
 
 module.exports = {
   create: async (req, res) => {
@@ -65,7 +66,16 @@ module.exports = {
     }
     try {
       const { id } = req.userData
-      let data = req.body
+      let { password, ...data } = req.body
+      console.log(data)
+      if (password) {
+        const salt = await bcrypt.genSalt()
+        const encryptedPassword = await bcrypt.hash(password, salt)
+        data = {
+          ...data,
+          password: encryptedPassword
+        }
+      }
 
       const initialResult = await profileModel.getDetailProfile(id)
       if (initialResult.length === 0) {
@@ -93,7 +103,7 @@ module.exports = {
       if (results.affectedRows > 0) {
         return res.json({
           success: true,
-          message: 'Cinema hasbeen changed',
+          message: 'Profile hasbeen updated',
           result: {
             ...initialResult[0],
             ...data
