@@ -73,7 +73,7 @@ module.exports = {
   getHistoryTransaction: async (id) => {
     return new Promise((resolve, reject) => {
       db.query(`
-      SELECT t.*,s.date,st.time,ci.price, c.seatSelected
+      SELECT t.*,s.date,st.time,ci.price, c.seatSelected, ci.image
       FROM transaction t
       INNER JOIN cart c ON c.idTransaction = t.id
       INNER JOIN schedule s ON s.id = c.idSchedule

@@ -99,7 +99,6 @@ module.exports = {
       }
 
       const results = await profileModel.updateMovie(id, data)
-      console.log(initialResult)
       if (results.affectedRows > 0) {
         return res.json({
           success: true,
