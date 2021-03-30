@@ -7,5 +7,6 @@ const uploadImage = require('../helpers/uploadProfile')
 routes.post('', authUser, uploadImage, validateProfile, profileController.create)
 routes.patch('', authUser, uploadImage, validateupdateProfile, profileController.update)
 routes.get('', authUser, profileController.getProfile)
+routes.delete('/image', authUser, profileController.deleteProfile)
 
 module.exports = routes

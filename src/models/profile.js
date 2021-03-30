@@ -26,7 +26,7 @@ module.exports = {
       })
     })
   },
-  updateMovie: async (id, data) => {
+  updateUser: async (id, data) => {
     return new Promise((resolve, reject) => {
       const key = Object.keys(data)
       const value = Object.values(data)
@@ -36,6 +36,18 @@ module.exports = {
       SET ${key.map((item, index) => `${item}="${value[index]}"`)}
       WHERE createdBy=${id}
     `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  },
+  deleteImage: async (id) => {
+    return new Promise((resolve, reject) => {
+      db.query(`
+      UPDATE profile
+      SET image = NULL
+      WHERE createdBy=${id}
+      `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)
       })

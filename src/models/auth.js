@@ -44,6 +44,19 @@ module.exports = {
         resolve(res)
       })
     })
+  },
+  updateUser: async (id, data) => {
+    return new Promise((resolve, reject) => {
+      const key = Object.keys(data)
+      const value = Object.values(data)
+      db.query(`
+      UPDATE users 
+      SET ${key.map((item, index) => `${item}="${value[index]}"`)}
+      WHERE id=${id}
+    `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
   }
-
 }

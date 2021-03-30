@@ -25,6 +25,7 @@ app.use('/showtime', require('./src/routers/showTIme'))
 app.use('/schedule', require('./src/routers/schedule'))
 app.use('/transaction', require('./src/routers/transaction'))
 app.use('/location', require('./src/routers/location'))
+app.use('/redirect', require('./src/routers/redirect'))
 app.use('', require('./src/routers/auth'))
 
 // Test App
