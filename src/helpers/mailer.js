@@ -12,34 +12,38 @@ const {
 } = process.env
 
 module.exports = (device, method, token, email, subject, message) => {
-  const template = fs.readFileSync(path.resolve(__dirname, './mailTemplate.html'), 'utf-8')
+  return new Promise((resolve, reject) => {
+    const template = fs.readFileSync(path.resolve(__dirname, './mailTemplate.html'), 'utf-8')
 
-  const transporter = nodemailer.createTransport(
-    smtpTransport({
-      service: EMAIL_SERVICE,
-      host: EMAIL_HOST,
-      auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS
+    const transporter = nodemailer.createTransport(
+      smtpTransport({
+        service: EMAIL_SERVICE,
+        host: EMAIL_HOST,
+        auth: {
+          user: EMAIL_USER,
+          pass: EMAIL_PASS
+        }
+      })
+    )
+
+    const url = `${process.env.APP_URL}/redirect/${method}?device=${device}&token=${token}`
+    const urlBrowser = `${process.env.APP_URL}/redirect/${method}?device=web-app&token=${token}`
+
+    const mailOption = {
+      from: EMAIL_USER,
+      to: email,
+      subject,
+      html: mustache.render(template, { url, urlBrowser, subject, message })
+    }
+
+    transporter.sendMail(mailOption, (err, info) => {
+      if (err) {
+        reject(err)
+        console.log(err)
+      } else {
+        console.log('Email sent', info)
+        resolve()
       }
     })
-  )
-
-  const url = `${process.env.APP_URL}/redirect/${method}?device=${device}&token=${token}`
-  const urlBrowser = `${process.env.APP_URL}/redirect/${method}?device=web-app&token=${token}`
-
-  const mailOption = {
-    from: EMAIL_USER,
-    to: email,
-    subject,
-    html: mustache.render(template, { url, urlBrowser, subject, message })
-  }
-
-  transporter.sendMail(mailOption, (err, info) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log('Email sent', info)
-    }
   })
 }

@@ -124,7 +124,7 @@ module.exports = {
       if (fs.existsSync(initialResult[0].image)) {
         fs.unlinkSync(initialResult[0].image)
       }
-      const results = await profileModel.updateUser(id, { image: null })
+      const results = await profileModel.deleteImage(id)
       if (results.affectedRows > 0) {
         return res.json({
           success: true,

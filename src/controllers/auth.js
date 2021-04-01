@@ -12,12 +12,13 @@ module.exports = {
       const { email, password } = req.body
 
       const existingUser = await userModel.getUserByCondition({ email })
-      if (existingUser[0].email_verified_at === null) {
-        return status.unauthorized(res, 'your account has not been activated, please check email')
-      }
+
       if (existingUser.length > 0) {
         const compare = await bcrypt.compare(password, existingUser[0].password)
         if (compare) {
+          if (existingUser[0].email_verified_at === null) {
+            return status.unauthorized(res, 'your account has not been activated, please check email your email')
+          }
           const { id, role } = existingUser[0]
           const token = jwt.sign({ id, role }, APP_KEY)
           return res.json({
@@ -79,12 +80,16 @@ module.exports = {
       const verivedEmail = await userModel.updateUser(data.id, { email_verified_at: dateVerived })
       if (verivedEmail.affectedRows > 0) {
         if (device === 'mobile-app') {
-          return res.redirect(`walletchip://register/${token}`)
+          return res.redirect('tickitz://activate/success')
         } else {
-          return res.redirect(301, `${CLIENT_URL}/login`)
+          return res.redirect(301, `${CLIENT_URL}/login?success=true`)
         }
       }
-      return status.unauthorized(res, 'Actived failed.')
+      if (device === 'mobile-app') {
+        return res.redirect('tickitz://activate/failed')
+      } else {
+        return res.redirect(301, `${CLIENT_URL}/login?success=failed`)
+      }
     } catch (err) {
       console.log(err)
       return status.serverError(res)
@@ -98,7 +103,7 @@ module.exports = {
       const user = await userModel.getUserByCondition({ email })
       if (user.length > 0) {
         const token = jwt.sign({ id: user[0].id, role: user[0].role }, APP_KEY)
-        mailer(device, 'forget-password', token, email, 'Tickitz Verification Email', 'Thanks for signing up for Tickitz! clik button in below.')
+        mailer(device, 'forget-password', token, email, 'Tickitz Forget Password', 'There was recently a request to change the password on your accoun, clik button in below.')
         return res.json({
           success: true,
           message: 'Check your email to reset password.'
@@ -114,7 +119,7 @@ module.exports = {
     try {
       const { device, token } = req.query
       if (device === 'mobile-app') {
-        return res.redirect(`walletchip://forget-password/${token}`)
+        return res.redirect(`tickitz://forgetPassword/${token}`)
       } else {
         return res.redirect(301, `${CLIENT_URL}/forget-password?token=${token}`)
       }
