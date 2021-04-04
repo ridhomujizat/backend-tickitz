@@ -82,13 +82,13 @@ module.exports = {
         if (device === 'mobile-app') {
           return res.redirect('tickitz://activate/success')
         } else {
-          return res.redirect(301, `${CLIENT_URL}/login?success=true`)
+          return res.redirect(301, `${CLIENT_URL}/sign-in?success=true`)
         }
       }
       if (device === 'mobile-app') {
         return res.redirect('tickitz://activate/failed')
       } else {
-        return res.redirect(301, `${CLIENT_URL}/login?success=failed`)
+        return res.redirect(301, `${CLIENT_URL}/sign-up?success=failed`)
       }
     } catch (err) {
       console.log(err)
@@ -121,7 +121,7 @@ module.exports = {
       if (device === 'mobile-app') {
         return res.redirect(`tickitz://forgetPassword/${token}`)
       } else {
-        return res.redirect(301, `${CLIENT_URL}/forget-password?token=${token}`)
+        return res.redirect(301, `${CLIENT_URL}/reset-password?token=${token}`)
       }
     } catch (err) {
       console.log(err)
