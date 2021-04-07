@@ -82,10 +82,19 @@ module.exports = {
       cond.limit = Number(cond.limit) || 5
       cond.dataLimit = cond.limit * cond.page
       cond.offset = (cond.page - 1) * cond.limit
-      cond.sort = cond.sort || 'id'
-      cond.order = cond.order || 'ASC'
+      cond.sort = cond.sort || 'releaseDate'
+      cond.order = cond.order || 'DESC'
       cond.status = cond.status || ''
 
+      if (cond.genre) {
+        const checkGenre = await genreModel.checkGenre(cond.genre)
+        if (checkGenre.length === 0) {
+          delete cond.genre
+          // console.log(cond.genre)
+        }
+        cond.genre = checkGenre[0].id
+        console.log('test')
+      }
       // get page info
       const totalDataCheck = await movieModel.checkTotalMovieCond(cond)
       const totalPage = Math.ceil(Number(totalDataCheck[0].totalData) / cond.limit)

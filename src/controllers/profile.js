@@ -67,7 +67,7 @@ module.exports = {
     try {
       const { id } = req.userData
       let { password, ...data } = req.body
-      console.log(data)
+      console.log(req.body)
       if (password) {
         const salt = await bcrypt.genSalt()
         const encryptedPassword = await bcrypt.hash(password, salt)

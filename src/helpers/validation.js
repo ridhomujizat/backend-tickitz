@@ -93,7 +93,7 @@ module.exports = {
       .isLength({ max: 100 }).withMessage('Last Name length must max 100!'),
     check('phone')
       .optional()
-      .isLength({ min: 10, max: 100 }).withMessage('Phone length must min 10 & max 100!')
+      .isLength({ min: 9, max: 100 }).withMessage('Phone length must min 9 & max 100!')
   ],
   validateupdateProfile: [
     check('firstName')
@@ -104,6 +104,6 @@ module.exports = {
       .isLength({ max: 100 }).withMessage('Last Name length must max 100!'),
     check('phone')
       .optional()
-      .isLength({ min: 10, max: 100 }).withMessage('Phone length must min 10 & max 100!')
+      .isLength({ min: 9, max: 100 }).withMessage('Phone length must min 9 & max 100!')
   ]
 }

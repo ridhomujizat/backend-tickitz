@@ -65,6 +65,7 @@ module.exports = {
       LEFT JOIN movie_genres mg ON m.id = mg.idMovie
       LEFT JOIN genre g ON mg.idGenre = g.id
       WHERE m.title LIKE "%${cond.search}%" AND m.status LIKE "%${cond.status}%"
+      ${cond.genre ? `AND mg.idGenre = ${cond.genre}` : ''} 
       ${cond.month ? `AND MONTH(releaseDate) = ${cond.month}` : ''}
       GROUP BY m.id, m.image, m.releaseDate, m.directed, m.hour, m.minute, m.casts, m.description, m.status, m.slug, m.createdAt, m.updatedAt
       ORDER BY ${cond.sort} ${cond.order}
@@ -78,8 +79,12 @@ module.exports = {
   checkTotalMovieCond: async (cond) => {
     return new Promise((resolve, reject) => {
       db.query(`
-        SELECT COUNT(*) as totalData FROM movies WHERE title LIKE "%${cond.search}%" AND status LIKE "%${cond.status}%"
-       ${cond.month ? `AND MONTH(releaseDate) = ${cond.month}` : ''}
+        SELECT COUNT(*) as totalData
+        FROM movies m
+        ${cond.genre ? 'LEFT JOIN movie_genres mg ON m.id = mg.idMovie LEFT JOIN genre g ON mg.idGenre = g.id' : ''}
+        WHERE title LIKE "%${cond.search}%" AND status LIKE "%${cond.status}%"
+        ${cond.genre ? `AND mg.idGenre = ${cond.genre}` : ''} 
+        ${cond.month ? `AND MONTH(releaseDate) = ${cond.month}` : ''}
       `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)

@@ -22,7 +22,6 @@ exports.authUser = (req, res, next) => {
   if (authorization && authorization.startsWith('Bearer')) {
     const token = authorization.substr(7)
     const data = jwt.verify(token, APP_KEY)
-    console.log(data)
     if (data) {
       req.userData = data
       return next()
